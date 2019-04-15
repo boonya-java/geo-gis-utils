@@ -131,7 +131,6 @@ public class Relationship {
 	 * 线--多点
 	 * @author PJL
 	 *
-	 * @company  北京地林伟业科技股份有限公司
 	 * @note     功能描述:TODO线条轨迹
 	 * @package  com.boonya.gis.algorithm
 	 * @filename Relationship.java
