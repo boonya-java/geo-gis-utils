@@ -187,7 +187,6 @@ public class Relationship {
 	 * 
 	 * @author PJL
 	 *
-	 * @company  北京地林伟业科技股份有限公司
 	 * @note     功能描述:TODO多边形-面
 	 * @package  com.boonya.gis.algorithm
 	 * @filename Relationship.java
