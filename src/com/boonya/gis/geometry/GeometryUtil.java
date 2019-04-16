@@ -242,8 +242,9 @@ public class GeometryUtil {
 	 * @throws FactoryException 
 	 * @throws TransformException 
 	 * @throws MismatchedDimensionException 
+     * @throws org.opengis.util.FactoryException 
 	 */
-/*	public static void main(String[] args) throws FactoryException, MismatchedDimensionException, TransformException {
+	public static void main(String[] args) throws FactoryException, MismatchedDimensionException, TransformException, org.opengis.util.FactoryException {
 		// TODO Auto-generated method stub
 		Coordinate point1=GeometryUtil.createPoint(116.252189, 39.9065632);
 		Coordinate point2=GeometryUtil.createPoint(116.251977, 39.9068492);
@@ -261,7 +262,7 @@ public class GeometryUtil {
 		System.out.println("line-changdu-xy:"+GeometryUtil.getLengthLonLat(line));
 		System.out.println("polygon-mianji-lonlat:"+polygon.getArea());
 		System.out.println("line-changdu-xy:"+GeometryUtil.getAreaLonLat(polygon));
-	}*/
+	}
     
     
 
