@@ -1,5 +1,7 @@
 package com.boonya.gis.algorithm;
 
+import java.util.List;
+
 public class Point {
 
 	/*
@@ -29,5 +31,13 @@ public class Point {
 	public Point(double x,double y){
 		this._x = x;
 		this._y = y;
+	}
+	
+	public GeoPoint convertToGeoPoint(Point point){
+		return new GeoPoint(point.getY(), point.getX());
+	}
+	
+	public List<GeoPoint> convertToGeoPoints(List<Point> points){
+		return GeoUtil.convertToGeoPoints(points);
 	}
 }

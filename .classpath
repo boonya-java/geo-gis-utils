@@ -16,5 +16,9 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/gt-metadata-13.1.jar"/>
+	<classpathentry kind="lib" path="lib/gt-opengis-8.0-M0.jar"/>
+	<classpathentry kind="lib" path="lib/gt-referencing-13.1.jar"/>
+	<classpathentry kind="lib" path="lib/gt-main-13.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -1,6 +1,19 @@
 package com.boonya.gis.algorithm;
 
+import java.util.List;
+
 public class GeoPoint {
+	
+	
+	public GeoPoint() {
+		super();
+	}
+	public GeoPoint(double longitude, double latitude) {
+		super();
+		this.longitude = longitude;
+		this.latitude = latitude;
+	}
+
 	/***
 	 * 经度
 	 */
@@ -34,6 +47,13 @@ public class GeoPoint {
 		this.latitude = latitude;
 	}
 	
+	public Point convertToPoint(GeoPoint point){
+		return new Point(point.getLatitude(), point.getLongitude());
+	}
+	
+	public List<Point> convertToPoints(List<GeoPoint> points){
+		return GeoUtil.convertToPoints(points);
+	}
 	
 
 }

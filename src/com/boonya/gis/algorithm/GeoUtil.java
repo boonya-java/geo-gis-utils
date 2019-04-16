@@ -1,5 +1,6 @@
 package com.boonya.gis.algorithm;
 
+import java.util.ArrayList;
 import java.util.List;
 /**
  * 
@@ -11,6 +12,28 @@ import java.util.List;
  * @date     2019年4月15日 上午10:39:16
  */
 public class GeoUtil {
+	/**
+	 * 对象集合转换
+	 * @param points
+	 * @return
+	 */
+	public static List<Point> convertToPoints(List<GeoPoint> points){
+		if(points==null||points.size()<1)return null;
+		List<Point> list=new ArrayList<Point>();
+		for (GeoPoint point : points) {
+			list.add(point.convertToPoint(point));
+		}
+		return list;
+	}
+	
+	public static List<GeoPoint> convertToGeoPoints(List<Point> points){
+		if(points==null||points.size()<1)return null;
+		List<GeoPoint> list=new ArrayList<GeoPoint>();
+		for (Point point : points) {
+			list.add(point.convertToGeoPoint(point));
+		}
+		return list;
+	}
 	/**
 	 * 计算是否在圆形区域（单位/千米）
 	 * 
