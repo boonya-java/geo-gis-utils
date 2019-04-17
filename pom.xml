@@ -1,11 +1,35 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>geo-gis</groupId>
-	<artifactId>geo-gis</artifactId>
+	<groupId>geo-gis-utils</groupId>
+	<artifactId>geo-gis-utils</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
+	    <!-- https://mvnrepository.com/artifact/org.geotools/gt-main -->
+		<!-- <dependency>
+		    <groupId>org.geotools</groupId>
+		    <artifactId>gt-main</artifactId>
+		    <version>13.1</version>
+		</dependency> -->
+	    <!-- https://mvnrepository.com/artifact/org.geotools/gt-metadata -->
+		<!-- <dependency>
+		    <groupId>org.geotools</groupId>
+		    <artifactId>gt-metadata</artifactId>
+		    <version>13.1</version>
+		</dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.geotools/gt-referencing -->
+		<!-- <dependency>
+		    <groupId>org.geotools</groupId>
+		    <artifactId>gt-referencing</artifactId>
+		    <version>13.1</version>
+		</dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.geotools/gt-opengis -->
+		<!-- <dependency>
+		    <groupId>org.geotools</groupId>
+		    <artifactId>gt-opengis</artifactId>
+		    <version>8.0-M0</version>
+		</dependency> -->
 		<!-- https://mvnrepository.com/artifact/org.opengis/geoapi -->
 		<dependency>
 			<groupId>org.opengis</groupId>
@@ -13,6 +37,7 @@
 			<version>3.0.1</version>
 		</dependency>
 	</dependencies>
+	
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>

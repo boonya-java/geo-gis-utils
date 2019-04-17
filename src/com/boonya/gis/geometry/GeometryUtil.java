@@ -1,7 +1,10 @@
 package com.boonya.gis.geometry;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralDirectPosition;
 import org.geotools.geometry.jts.JTSFactoryFinder;
@@ -58,7 +61,7 @@ public class GeometryUtil {
      * @return
      * @throws ParseException
      */
-    public Geometry createPointByWKT(String geomWKT) throws ParseException{  
+    public static Geometry createPointByWKT(String geomWKT) throws ParseException{  
         WKTReader reader = new WKTReader( geometryFactory );  
         Geometry geom =reader.read(geomWKT);  
         return geom;  
@@ -172,7 +175,7 @@ public class GeometryUtil {
      * @return
      * @throws MismatchedDimensionException
      * @throws FactoryException
-     * @throws TransformException
+     * @throws TransformException 
      * @throws org.opengis.util.FactoryException 
      */
     public static double getAreaLonLat(Polygon polygon) throws MismatchedDimensionException, FactoryException, TransformException, org.opengis.util.FactoryException{
@@ -238,13 +241,213 @@ public class GeometryUtil {
     }
     
     /**
+     * 获取空间信息点
+     * 
+     * @param geometry
+     * @return
+     */
+    public static List<Coordinate> getCoordinates(Geometry geometry){
+    	return Arrays.asList(geometry.getCoordinates());
+    }
+    
+    /**
+     * 判断几何图形是否包含其本身(false标识几何图形存在非节点交叉点)
+     * 
+     * @param geometry
+     * @return
+     */
+    public static boolean isContainSelf(Geometry geometry){
+    	return geometry.contains(geometry);
+    }
+    
+    /**
+     * 解析交集的线条集合
+     * 
+     * @param multiLineString
+     * @return
+     */
+    public static List<LineString> parseMultiLineString(Geometry multiLineString){
+    	int count=multiLineString.getNumGeometries();
+    	List<LineString> list=new ArrayList<LineString>();
+    	Geometry geometry_=null;
+    	for (int i = 0; i < count; i++) {
+    		geometry_=multiLineString.getGeometryN(i);
+    		List<Coordinate> points=Arrays.asList(geometry_.getCoordinates());
+    		LineString lineString=createLine(points);
+    		list.add(lineString);
+		}
+    	return list;
+    }
+    
+    /**
+     * 计算线条与几何图像的交集内外里程长度-千米(效率低下-每次都要判定点是否在围栏内部)
+     * @param lineString
+     * @param polygon
+     * @return
+     * @throws ParseException 
+     */
+	public static Map<String,Double> getDistancesByTraditional(LineString lineString,Polygon polygon) throws ParseException {
+		double sum=0.0,inner=0.0,distance=0.0;
+		boolean isInner=false;
+		List<Coordinate> linePoints=getCoordinates(lineString);
+		Geometry currentPoint=null, lastGeoPoint=null;
+		String geoWKT=polygon.toString();
+		for (Coordinate coor : linePoints) {
+			currentPoint=createGeoPoint(coor.x,coor.y);
+			// 点是否在几何图形内部
+			isInner=isContains(geoWKT, currentPoint.toString());
+			// 总里程计算
+			if(lastGeoPoint!=null){
+				// 计算当前与上一个点之间的距离
+				distance=lastGeoPoint.distance(currentPoint);
+				sum+=distance;
+			}
+			// 内部里程计算
+			if(isInner&&lastGeoPoint!=null){
+				inner+=distance;
+			}
+			lastGeoPoint=currentPoint;
+		}
+		double outer = sum - inner;
+		Map<String,Double> map=new HashMap<String, Double>();
+		map.put("SUM", sum);
+		map.put("INN", inner);
+		map.put("OUT", outer);
+		return map;
+	}
+    
+    /**
+     * 计算线条与几何图像的交集内外里程长度-米
+     * @param lineString
+     * @param polygon
+     * @return
+     * @throws ParseException 
+     */
+	public static Map<String,Double> getDistances(LineString lineString,Polygon polygon) throws ParseException {
+		Geometry multiLineString = GeometryUtil.intersectionGeo(lineString,polygon);
+		return getDistances((Geometry)lineString,multiLineString);
+	}
+    
+    /**
+     * 计算线条与几何图像的交集内外里程长度-米
+     * @param lineString
+     * @param multiLineString
+     * @return
+     * @throws ParseException 
+     */
+	public static Map<String,Double> getDistances(Geometry lineString,Geometry multiLineString) throws ParseException {
+		List<LineString> lines = GeometryUtil.parseMultiLineString(multiLineString);
+		double sum = GeometryUtil.getDistance(lineString);
+		double inner = GeometryUtil.getDistance(lines);
+		double outer = sum - inner;
+		Map<String,Double> map=new HashMap<String, Double>();
+		map.put("SUM", sum);
+		map.put("INN", inner);
+		map.put("OUT", outer);
+		return map;
+	}
+    
+    /**
+     * 计算轨迹里程长度-米
+     * @param point1
+     * @param point2
+     * @return
+     * @throws ParseException 
+     */
+	public static double getDistance(List<LineString> lines) throws ParseException {
+		double sum=0.0;
+		for (int i = 0,j=lines.size(); i < j; i++) {
+			sum+=getDistance(lines.get(i));
+		}
+		return sum;
+	}
+	
+	 /**
+     * 计算轨迹里程长度-米
+     * @param point1
+     * @param point2
+     * @return
+     * @throws ParseException 
+     */
+	public static double getDistance(Geometry lineString) throws ParseException {
+		double sum=0.0;
+		if(lineString==null)	return sum;
+		Geometry geometry=lineString;
+		Coordinate [] coordinates=geometry.getCoordinates();
+		Coordinate current=null,last=null;
+		for (Coordinate coordinate : coordinates) {
+			current=coordinate;
+			if(last!=null){
+				sum+=GeometryUtil.getDistance(last, current);
+			}
+			last=current;
+		}
+		return sum;
+	}
+    
+    /**
+     * 计算轨迹里程长度-米
+     * @param point1
+     * @param point2
+     * @return
+     * @throws ParseException 
+     */
+	public static double getDistance(LineString line) throws ParseException {
+		double sum=0.0;
+		if(line==null)	return sum;
+		Geometry geometry=GeometryUtil.createPointByWKT(line.toString());
+		Coordinate [] coordinates=geometry.getCoordinates();
+		Coordinate current=null,last=null;
+		for (Coordinate coordinate : coordinates) {
+			current=coordinate;
+			if(last!=null){
+				sum+=GeometryUtil.getDistance(last, current);
+			}
+			last=current;
+		}
+		return sum;
+	}
+	
+	public static WKTReader getWKTReader(){
+		 WKTReader reader = new WKTReader( geometryFactory );  
+		 return reader;
+	}
+    
+    /**
+     * 计算两点间的距离 -米
+     * @param point1
+     * @param point2
+     * @return
+     */
+	public static double getDistance(Coordinate point1,Coordinate point2) {
+		double radLat1 = rad(point1.x);
+		double radLat2 = rad(point2.x);
+		double a = radLat1 - radLat2;
+		double b = rad(point1.y) - rad(point2.y);
+		double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2)
+				+ Math.cos(radLat1) * Math.cos(radLat2)
+				* Math.pow(Math.sin(b / 2), 2)));
+		s = s * EARTH_RADIUS;
+		s = Math.round(s * 10000) / 10;
+		return s;
+	}
+	
+	private static double rad(double d) {
+		return d * Math.PI / 180.0;
+	}
+
+	/**
+	 * 地球半径：6378.137KM
+	 */
+	private static double EARTH_RADIUS = 6378.137;
+    
+    /**
 	 * @param args
 	 * @throws FactoryException 
 	 * @throws TransformException 
 	 * @throws MismatchedDimensionException 
-     * @throws org.opengis.util.FactoryException 
 	 */
-	public static void main(String[] args) throws FactoryException, MismatchedDimensionException, TransformException, org.opengis.util.FactoryException {
+/*	public static void main(String[] args) throws FactoryException, MismatchedDimensionException, TransformException {
 		// TODO Auto-generated method stub
 		Coordinate point1=GeometryUtil.createPoint(116.252189, 39.9065632);
 		Coordinate point2=GeometryUtil.createPoint(116.251977, 39.9068492);
@@ -262,7 +465,7 @@ public class GeometryUtil {
 		System.out.println("line-changdu-xy:"+GeometryUtil.getLengthLonLat(line));
 		System.out.println("polygon-mianji-lonlat:"+polygon.getArea());
 		System.out.println("line-changdu-xy:"+GeometryUtil.getAreaLonLat(polygon));
-	}
+	}*/
     
     
 

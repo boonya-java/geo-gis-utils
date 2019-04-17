@@ -4,33 +4,41 @@ import java.util.List;
 
 public class Point {
 
-	/*
-	 * X坐标
-	 */	 
-	private double _x;
-	public double getX(){
-		return _x;
-	}
-//	public void setX(double x){
-//		this._x = x;
-//	}
-	/*
-	 * Y坐标
-	 */
-	private double _y;
-	public double getY(){
-		return _y;
-	}
-//	public void setY(double y){
-//		this._y = y;
-//	}
+	private double x;
 	
-	/*
-	 * 构造函数
+	private double y;
+	
+	/**
+	 * @return the x
 	 */
+	public double getX() {
+		return x;
+	}
+
+	/**
+	 * @param x the x to set
+	 */
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	/**
+	 * @return the y
+	 */
+	public double getY() {
+		return y;
+	}
+
+	/**
+	 * @param y the y to set
+	 */
+	public void setY(double y) {
+		this.y = y;
+	}
+
 	public Point(double x,double y){
-		this._x = x;
-		this._y = y;
+		this.x = x;
+		this.y = y;
 	}
 	
 	public GeoPoint convertToGeoPoint(Point point){
