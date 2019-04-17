@@ -6,7 +6,7 @@ geo gis utils.
 
 ## found non-noded intersection between LINESTRING
 
-<code>
+```
 com.vividsolutions.jts.geom.TopologyException: found non-noded intersection between LINESTRING ( 116.26451237493255 39.91605493967855, 116.271980875453 39.925889370081514 ) and LINESTRING ( 116.28210414799756 39.933904772275405, 116.25531773218691 39.90853459945099 ) [ (116.26772659308502, 39.92028738294261, NaN) ]
 	at com.vividsolutions.jts.noding.FastNodingValidator.checkValid(FastNodingValidator.java:130)
 	at com.vividsolutions.jts.geomgraph.EdgeNodingValidator.checkValid(EdgeNodingValidator.java:94)
@@ -20,9 +20,10 @@ com.vividsolutions.jts.geom.TopologyException: found non-noded intersection betw
 	at com.forestar.geometry.utils.GeometryUtil.intersectionGeo(GeometryUtil.java:122)
 	at test.GeometryTest.main(GeometryTest.java:84)
 
-</code>
+```
+Solution：
 
-<code>
+```
  /**
      * 计算线条与几何图像的交集内外里程长度-米
      * @param lineString
@@ -35,4 +36,4 @@ com.vividsolutions.jts.geom.TopologyException: found non-noded intersection betw
 		return getDistances((Geometry)lineString,multiLineString);
 	}
 	
-</code>	
+```
