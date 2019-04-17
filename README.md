@@ -37,3 +37,15 @@ Solution：
 	}
 	
 ```
+Please do not use two Geometrys.
+```
+ /** 
+     * 两个几何对象的交集 
+     * @param a 
+     * @param b 
+     * @return 
+     */  
+    public static Geometry intersectionGeo(Geometry a,Geometry b){  
+        return a.intersection(b);  
+    }  
+```
